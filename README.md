@@ -6,6 +6,9 @@ implementation of decoding them is still in progress*
 
 ** This model is not exact clone of enigma, it has a few differences. **
 
+The design of Enigma limits it to the character set 'A'-'Z'.
+Lower-case letters and punctuation are not supported.
+
 
 ## ENIGMA HISTORY
 
@@ -32,3 +35,4 @@ mathematician Alan M. Turing.
 3. https://youtu.be/G2_Q9FoD-oQ
 4. https://youtu.be/d2NWPG2gB_A
 5. https://brilliant.org/wiki/enigma-machine/
+6. https://en.wikipedia.org/wiki/Enigma_rotor_details
