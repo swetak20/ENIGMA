@@ -19,7 +19,7 @@ in the early 1930s. In 1939, with the growing likelihood of a German invasion, t
 information over to the British, who set up a secret code-breaking group known as Ultra, under 
 mathematician Alan M. Turing.
 
-## The Detailed Algothim of ENIGMA
+## The Detailed Algothim Diagram of ENIGMA
 
 ![wiring diagram](https://github.com/swetak20/ENIGMA/blob/main/Images/enigma.png)
 
@@ -36,3 +36,4 @@ mathematician Alan M. Turing.
 4. https://youtu.be/d2NWPG2gB_A
 5. https://brilliant.org/wiki/enigma-machine/
 6. https://en.wikipedia.org/wiki/Enigma_rotor_details
+7. https://mckoss.com/posts/paper-enigma/paper-enigma.pdf
