@@ -12,7 +12,7 @@
 class Plugboard:
     def __init__(self) -> None:
         pass
-    def caesar_cipher(self,ch):  
+    def caesar_cypher(self,ch):  
         if(ch == "A"):    #1
             ch = "F"
         if(ch == "F"):
@@ -145,10 +145,10 @@ class Enigma:
         self.setup = setup
 
 
-    def cipher(self, inp):
-        inp = self.setup.plugboard.caesar_cipher(inp)
+    def cypher(self, inp):
+        inp = self.setup.plugboard.caesar_cypher(inp)
         inp = self.setup.update(inp)
-        inp = self.setup.plugboard.caesar_cipher(inp)
+        inp = self.setup.plugboard.caesar_cypher(inp)
 
         return inp
 
@@ -179,5 +179,5 @@ enigma = Enigma(setup)
 text =  input("Enter message:") 
 
 for i in range(len(text)):
-    print(enigma.cipher(text[i]))
+    print(enigma.cypher(text[i]))
 
