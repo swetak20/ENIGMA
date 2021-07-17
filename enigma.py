@@ -112,9 +112,11 @@ class Setup:
 
         # rotor1
         if(self.rotor1.key == self.rotor1.notch):
-            self.rotor2.key = ALPHABETS[(self.rotor2.key + 1)%26]           #update the rotor2 key when key of rotor1 is equal to rotor1 notch
+            key_index = ALPHABETS.index(self.rotor2.key)
+            self.rotor2.key = ALPHABETS[(key_index + 1)%26]           #update the rotor2 key when key of rotor1 is equal to rotor1 notch
 
-        self.rotor1.key = ALPHABETS[(self.rotor1.key + 1)%26]           #rotor1 key is always updated
+        key_index = ALPHABETS.index(self.rotor1.key)
+        self.rotor1.key = ALPHABETS[(key_index + 1)%26]           #rotor1 key is always updated
         index = ALPHABETS.index(inp)
         key_index = ALPHABETS.index(self.rotor1.key)
 
@@ -125,12 +127,13 @@ class Setup:
 
         #rotor2
         if(self.rotor2.key == self.rotor2.notch):
-            self.rotor3.key = ALPHABETS[(self.rotor3.key + 1)%26] 
+            key_index = ALPHABETS.index(self.rotor3.key)
+            self.rotor3.key = ALPHABETS[(key_index + 1)%26] 
 
         index = (ALPHABETS.index(output_letter) - key_index)%26
         key_index = ALPHABETS.index(self.rotor2.key)
 
-        output_letter = self.rotor2.fwiring[(index +key_index )%26]
+        output_letter = self.rotor2.fwiring[(index + key_index )%26]
 
         
 #-----------------------------------------------------------------------------------------------------------------
@@ -156,7 +159,8 @@ class Setup:
 
         #rotor3
         if(self.rotor3.key == self.rotor3.notch):
-            self.rotor2.key = ALPHABETS[(self.rotor2.key + 1)%26] 
+            key_index = ALPHABETS.index(self.rotor2.key)
+            self.rotor2.key = ALPHABETS[(key_index + 1)%26] 
 
         index = (ALPHABETS.index(ref_output) - key_index)%26
         key_index = ALPHABETS.index(self.rotor3.key)
@@ -168,7 +172,8 @@ class Setup:
 
         #rotor2
         if(self.rotor2.key == self.rotor2.notch):
-            self.rotor1.key = ALPHABETS[(self.rotor1.key + 1)%26] 
+            key_index = ALPHABETS.index(self.rotor1.key)
+            self.rotor1.key = ALPHABETS[(key_index + 1)%26] 
 
         index = (ALPHABETS.index(output_letter) - key_index)%26
         key_index = ALPHABETS.index(self.rotor2.key)
@@ -178,8 +183,8 @@ class Setup:
 #----------------------------------------------------------------------------------------------------------------
 
         #rotor1
-
-        self.rotor1.key = ALPHABETS[(self.rotor1.key + 1)%26]           #rotor1 key is always updated
+        key_index = ALPHABETS.index(self.rotor1.key)
+        self.rotor1.key = ALPHABETS[(key_index + 1)%26]           #rotor1 key is always updated
         index = ALPHABETS.index(inp)
         key_index = ALPHABETS.index(self.rotor1.key)
 
