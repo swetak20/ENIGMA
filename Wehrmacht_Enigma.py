@@ -16,7 +16,7 @@ rotor3 : V
 '''
 
 '''
-initial_key = ['K','C','M']
+initial_key = ['A','A','A']
 is a list of the starting character for each rotor
  *      as positioned on the spindle, where the nth character of
  *      [key] is the starting character for the nth rotor in
@@ -27,15 +27,66 @@ is a list of the starting character for each rotor
 reflector = B (wiring config :YRUHQSLDPXNGOKMIEBFZCWVJAT)
 '''
 
+
+
+
+
 ALPHABETS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'    
 
-class Rotor:
-    def __init__(self, notch, key, fwiring, bwriring):
-        self.notch = notch
-        self.key = key
-        self.fwiring = fwiring
-        self.bwiring = bwriring
+ROTOR_WIRINGS = {
+    'I': {'forward':'EKMFLGDQVZNTOWYHXUSPAIBRCJ',
+          'backward':'UWYGADFPVZBECKMTHXSLRINQOJ'},
+    'II':{'forward':'AJDKSIRUXBLHWTMCQGZNPYFVOE',
+          'backward':'AJPCZWRLFBDKOTYUQGENHXMIVS'},
+    'III':{'forward':'BDFHJLCPRTXVZNYEIWGAKMUSQO',
+           'backward':'TAGBPCSDQEUFVNZHYIXJWLRKOM'},
+    }
+ROTOR_NOTCHES = {
+    'I':'Q',
+    'II':'E', 
+    'III':'V'
+    }
 
+class Rotor:
+
+    def __init__(self, rotor_num, window_letter, next_rotor=None, prev_rotor=None):
+        self.rotor_num = rotor_num
+        self.wiring = ROTOR_WIRINGS[rotor_num]
+        self.notch = ROTOR_NOTCHES[rotor_num]
+        self.window = window_letter
+        self.offset = ALPHABETS.index(self.window)
+        self.next_rotor = next_rotor
+        self.prev_rotor = prev_rotor
+
+    def step(self):
+        
+        if self.next_rotor and self.window==self.notch:
+            self.next_rotor.step()
+        self.offset = (self.offset + 1)%26
+        self.window = ALPHABETS[self.offset]
+
+    def encode_letter(self, index, forward=True):
+    
+
+        if forward:
+            i = 'forward'
+            output_letter = self.wiring[i][(index + self.offset)%26]
+        else:
+            i = 'backward'
+            output_letter = self.wiring[i][(index + self.offset)%26]
+
+        
+
+        output_index = (ALPHABETS.index(output_letter) - self.offset)%26
+
+
+        if self.next_rotor and forward:
+            return self.next_rotor.encode_letter(output_index, forward)
+        elif self.prev_rotor and not forward:
+            return self.prev_rotor.encode_letter(output_index, forward = False)
+
+        else:
+            return output_index
 
 
 class Reflector:
@@ -57,188 +108,181 @@ class Plugboard:
     def caesar_cypher(self,ch):  
         if(ch == "A"):    #1
             ch = "F"
-        if(ch == "F"):
+        elif(ch == "F"):
             ch = "A"
-        if(ch == "M"):    #2
+        elif(ch == "M"):    #2
             ch = "N"
-        if(ch == "N"):
+        elif(ch == "N"):
             ch = "M"
-        if(ch == "O"):    #3
+        elif(ch == "O"):    #3
             ch = "T"
-        if(ch == "T"):
+        elif(ch == "T"):
             ch = "O"
-        if(ch == "L"):    #4
+        elif(ch == "L"):    #4
             ch = "K"
-        if(ch == "K"):
+        elif(ch == "K"):
             ch = "L"
-        if(ch == "R"):    #5
+        elif(ch == "R"):    #5
             ch = "Z"
-        if(ch == "Z"):
+        elif(ch == "Z"):
             ch = "R"
-        if(ch == "Q"):    #6
+        elif(ch == "Q"):    #6
             ch = "W"
-        if(ch == "W"):
+        elif(ch == "W"):
             ch = "Q"
-        if(ch == "I"):    #7
+        elif(ch == "I"):    #7
             ch = "C"
-        if(ch == "C"):
+        elif(ch == "C"):
             ch = "I"
-        if(ch == "J"):    #8
+        elif(ch == "J"):    #8
             ch = "X"
-        if(ch == "X"):
+        elif(ch == "X"):
             ch = "J"
-        if(ch == "D"):    #9
+        elif(ch == "D"):    #9
             ch = "V"
-        if(ch == "V"):
+        elif(ch == "V"):
             ch = "D"
-        if(ch == "Y"):    #10
+        elif(ch == "Y"):    #10
             ch = "E"
-        if(ch == "E"):
+        elif(ch == "E"):
             ch = "Y"
         
         return ch
 
 class Setup:
-    def __init__(self, rotor1 : Rotor, rotor2 : Rotor ,rotor3 : Rotor ,plugboard : Plugboard ,reflector : Reflector) :
-        self.rotor1 = rotor1
-        self.rotor2 = rotor2
-        self.rotor3 = rotor3
-        self.plugboard = plugboard
-        self.reflector = reflector
+    def __init__(self, key='AAA', rotor_order=['I', 'II', 'III']):
 
-    def update (self, inp):
-
-        #FORWARD
-
-        # rotor1
-        if(self.rotor1.key == self.rotor1.notch):
-            key_index = ALPHABETS.index(self.rotor2.key)
-            self.rotor2.key = ALPHABETS[(key_index + 1)%26]           #update the rotor2 key when key of rotor1 is equal to rotor1 notch
-
-        key_index = ALPHABETS.index(self.rotor1.key)
-        self.rotor1.key = ALPHABETS[(key_index + 1)%26]           #rotor1 key is always updated
-    
-        index = ALPHABETS.index(inp)
-        key_index = ALPHABETS.index(self.rotor1.key)
-
-        output_letter = self.rotor1.fwiring[(index +key_index )%26]
-        print(f'input: {inp}, output {output_letter}')
+        self.key = key
+        self.rotor_order = rotor_order
+        self.rotor3 = Rotor(rotor_order[2], key[2])
+        self.rotor2 = Rotor(rotor_order[1], key[1], self.rotor3)
+        self.rotor1 = Rotor(rotor_order[0], key[0], self.rotor2)
+        self.reflector = Reflector()
+        self.plugboard = Plugboard()
+        self.rotor2.prev_rotor = self.rotor1
+        self.rotor3.prev_rotor = self.rotor2
 
 
-#-----------------------------------------------------------------------------------------------------------------
-
-        #rotor2
-        if(self.rotor2.key == self.rotor2.notch):
-            key_index = ALPHABETS.index(self.rotor3.key)
-            self.rotor3.key = ALPHABETS[(key_index + 1)%26] 
-
-        index = (ALPHABETS.index(output_letter) - key_index)%26
-        key_index = ALPHABETS.index(self.rotor2.key)
- 
-        output_letter = self.rotor2.fwiring[(index + key_index )%26]
-        print(f' output {output_letter}')
+    def encode_decode_letter(self, inp):
         
-#-----------------------------------------------------------------------------------------------------------------
-
-        #rotor3
-
-        index = (ALPHABETS.index(output_letter) - key_index)%26
-        key_index = ALPHABETS.index(self.rotor3.key)
+        # print(f'input : {inp}')
+        inp = self.plugboard.caesar_cypher(inp)
+        # print(f'plugboard output : {inp}')
+        self.rotor1.step()
         
-        output_letter = self.rotor3.fwiring[(index + key_index )%26]
-        print(f' output {output_letter}')
-        print(self.rotor1.key, self.rotor2.key,self.rotor3.key)
-#------------------------------------------------------------------------------------------------------------------
-
-        #REFLECTOR
-        print(output_letter)
-        index = ALPHABETS.index(output_letter)
-        ref_output = self.reflector.wiring[ALPHABETS[(index)%26]]
-        print(ref_output)
-
-#-------------------------------------------------------------------------------------------------------------------
-        #BACKWARD
-
-        #rotor3
-        # if(self.rotor3.key == self.rotor3.notch):
-        #     key_index = ALPHABETS.index(self.rotor2.key)
-        #     self.rotor2.key = ALPHABETS[(key_index + 1)%26] 
-
-        index = (ALPHABETS.index(ref_output) - key_index)%26
-      
-        output_letter = self.rotor3.bwiring[(index + key_index )%26]
-        print(f' output {output_letter}')
-#-----------------------------------------------------------------------------------------------------------------
+        left_pass = self.rotor1.encode_letter(ALPHABETS.index(inp))
+        # print(f'After left pass: {left_pass}')
+        refl_output = self.reflector.wiring[ALPHABETS[(left_pass)%26]]
+        # print(f'After reflection: {refl_output}')
+        final_letter = ALPHABETS[self.rotor3.encode_letter(ALPHABETS.index(refl_output), forward=False)]
+        # print(f'After backward pass : {final_letter}')
+        final_letter = self.plugboard.caesar_cypher(final_letter)
+        # print(f'final output : {final_letter}')
+        return final_letter
 
 
-        #rotor2
-        if(self.rotor2.key == self.rotor2.notch):
-            key_index = ALPHABETS.index(self.rotor3.key)
-            self.rotor3.key = ALPHABETS[(key_index + 1)%26] 
 
-        key_index = ALPHABETS.index(self.rotor2.key)
-        index = (ALPHABETS.index(output_letter) - key_index)%26
+#     def update (self, inp):
 
-        output_letter = self.rotor2.bwiring[(index +key_index )%26]
-        print(f' output {output_letter}')
-#----------------------------------------------------------------------------------------------------------------
+#         #FORWARD
 
-        #rotor1
-        key_index = ALPHABETS.index(self.rotor1.key)
-        self.rotor1.key = ALPHABETS[(key_index + 1)%26]           #rotor1 key is always updated
-        index = (ALPHABETS.index(output_letter) - key_index)%26
-        key_index = ALPHABETS.index(self.rotor1.key)
-        output_letter = self.rotor1.bwiring[(index +key_index )%26]
+#         # rotor1
+#         if(self.rotor1.key == self.rotor1.notch):
+#             key_index = ALPHABETS.index(self.rotor2.key)
+#             self.rotor2.key = ALPHABETS[(key_index + 1)%26]           #update the rotor2 key when key of rotor1 is equal to rotor1 notch
+
+#         key_index = ALPHABETS.index(self.rotor1.key)
+#         self.rotor1.key = ALPHABETS[(key_index + 1)%26]           #rotor1 key is always updated
+#         index = ALPHABETS.index(inp)
+#         key_index = ALPHABETS.index(self.rotor1.key)
+
+#         output_letter = self.rotor1.fwiring[(index +key_index )%26]
+
+
+# #-----------------------------------------------------------------------------------------------------------------
+
+#         #rotor2
+#         if(self.rotor2.key == self.rotor2.notch):
+#             key_index = ALPHABETS.index(self.rotor3.key)
+#             self.rotor3.key = ALPHABETS[(key_index + 1)%26] 
+
+#         index = (ALPHABETS.index(output_letter) - key_index)%26
+#         key_index = ALPHABETS.index(self.rotor2.key)
+
+#         output_letter = self.rotor2.fwiring[(index + key_index )%26]
+
         
-        print(f' output {output_letter}')
-        print(self.rotor1.key, self.rotor2.key,self.rotor3.key)
-#----------------------------------------------------------------------------------------------------------------
+# #-----------------------------------------------------------------------------------------------------------------
+
+#         #rotor3
+
+#         index = (ALPHABETS.index(output_letter) - key_index)%26
+#         key_index = ALPHABETS.index(self.rotor3.key)
+
+#         output_letter = self.rotor3.fwiring[(index + key_index )%26]
+
+
+# #------------------------------------------------------------------------------------------------------------------
+
+#         #REFLECTOR
+
+#         index = ALPHABETS.index(output_letter)
+#         ref_output = self.reflector.wiring[ALPHABETS[(index)%26]]
+
+
+# #-------------------------------------------------------------------------------------------------------------------
+#         #BAKWARD
+
+#         #rotor3
+#         if(self.rotor3.key == self.rotor3.notch):
+#             key_index = ALPHABETS.index(self.rotor2.key)
+#             self.rotor2.key = ALPHABETS[(key_index + 1)%26] 
+
+#         index = (ALPHABETS.index(ref_output) - key_index)%26
+#         key_index = ALPHABETS.index(self.rotor3.key)
+
+#         output_letter = self.rotor3.bwiring[(index + key_index )%26]
+
+# #-----------------------------------------------------------------------------------------------------------------
+
+
+#         #rotor2
+#         if(self.rotor2.key == self.rotor2.notch):
+#             key_index = ALPHABETS.index(self.rotor1.key)
+#             self.rotor1.key = ALPHABETS[(key_index + 1)%26] 
+
+#         index = (ALPHABETS.index(output_letter) - key_index)%26
+#         key_index = ALPHABETS.index(self.rotor2.key)
+
+#         output_letter = self.rotor2.bwiring[(index +key_index )%26]
+
+# #----------------------------------------------------------------------------------------------------------------
+
+#         #rotor1
+#         key_index = ALPHABETS.index(self.rotor1.key)
+#         self.rotor1.key = ALPHABETS[(key_index + 1)%26]           #rotor1 key is always updated
+#         index = ALPHABETS.index(inp)
+#         key_index = ALPHABETS.index(self.rotor1.key)
+
+#         output_letter = self.rotor1.bwiring[(index +key_index )%26]
+
+# #----------------------------------------------------------------------------------------------------------------
         
-        return output_letter
-
-
-class Enigma:
-    def __init__(self, setup : Setup) -> None:
-        self.setup = setup
-
-    def cypher(self, inp):
-
-        inp = self.setup.plugboard.caesar_cypher(inp)
-        inp = self.setup.update(inp)
-        inp = self.setup.plugboard.caesar_cypher(inp)
-
-        return inp
-
+#         return output_letter
 
 
 '''main'''
 
-rtr_f1 = 'EKMFLGDQVZNTOWYHXUSPAIBRCJ'
-rtr_b1 = 'UWYGADFPVZBECKMTHXSLRINQOJ'
-
-rtr_f2 = 'AJDKSIRUXBLHWTMCQGZNPYFVOE'
-rtr_b2 = 'AJPCZWRLFBDKOTYUQGENHXMIVS'
-
-rtr_f3 = 'BDFHJLCPRTXVZNYEIWGAKMUSQO'
-rtr_b3 = 'TAGBPCSDQEUFVNZHYIXJWLRKOM'
-
-rotor1 = Rotor('Q', 'A', rtr_f1, rtr_b1)
-rotor2 = Rotor('E', 'A', rtr_f2, rtr_b2)
-rotor3 = Rotor('V', 'A', rtr_f3, rtr_b3)
 
 
-plugboard = Plugboard()
 
-reflector = Reflector()
+setup = Setup()
 
-setup = Setup(rotor1, rotor2, rotor3, plugboard, reflector)
-
-enigma = Enigma(setup)
 
 plain_text = input("Enter plain_text:")
-
 cyphertext = []
 for i in range(len(plain_text)):
-    cyphertext.append(enigma.cypher(plain_text[i]))
+    cyphertext.append((setup.encode_decode_letter(plain_text[i])))
 
 print(cyphertext)
+
