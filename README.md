@@ -37,3 +37,4 @@ mathematician Alan M. Turing.
 5. https://brilliant.org/wiki/enigma-machine/
 6. https://en.wikipedia.org/wiki/Enigma_rotor_details
 7. https://mckoss.com/posts/paper-enigma/paper-enigma.pdf
+8. https://web.archive.org/web/20060720040135/http://members.fortunecity.com/jpeschel/gillog1.htm
