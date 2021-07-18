@@ -117,10 +117,12 @@ class Setup:
 
         key_index = ALPHABETS.index(self.rotor1.key)
         self.rotor1.key = ALPHABETS[(key_index + 1)%26]           #rotor1 key is always updated
+    
         index = ALPHABETS.index(inp)
         key_index = ALPHABETS.index(self.rotor1.key)
 
         output_letter = self.rotor1.fwiring[(index +key_index )%26]
+        print(f'input: {inp}, output {output_letter}')
 
 
 #-----------------------------------------------------------------------------------------------------------------
@@ -132,9 +134,9 @@ class Setup:
 
         index = (ALPHABETS.index(output_letter) - key_index)%26
         key_index = ALPHABETS.index(self.rotor2.key)
-
+ 
         output_letter = self.rotor2.fwiring[(index + key_index )%26]
-
+        print(f' output {output_letter}')
         
 #-----------------------------------------------------------------------------------------------------------------
 
@@ -142,54 +144,54 @@ class Setup:
 
         index = (ALPHABETS.index(output_letter) - key_index)%26
         key_index = ALPHABETS.index(self.rotor3.key)
-
+        
         output_letter = self.rotor3.fwiring[(index + key_index )%26]
-
-
+        print(f' output {output_letter}')
+        print(self.rotor1.key, self.rotor2.key,self.rotor3.key)
 #------------------------------------------------------------------------------------------------------------------
 
         #REFLECTOR
-
+        print(output_letter)
         index = ALPHABETS.index(output_letter)
         ref_output = self.reflector.wiring[ALPHABETS[(index)%26]]
-
+        print(ref_output)
 
 #-------------------------------------------------------------------------------------------------------------------
-        #BAKWARD
+        #BACKWARD
 
         #rotor3
-        if(self.rotor3.key == self.rotor3.notch):
-            key_index = ALPHABETS.index(self.rotor2.key)
-            self.rotor2.key = ALPHABETS[(key_index + 1)%26] 
+        # if(self.rotor3.key == self.rotor3.notch):
+        #     key_index = ALPHABETS.index(self.rotor2.key)
+        #     self.rotor2.key = ALPHABETS[(key_index + 1)%26] 
 
         index = (ALPHABETS.index(ref_output) - key_index)%26
-        key_index = ALPHABETS.index(self.rotor3.key)
-
+      
         output_letter = self.rotor3.bwiring[(index + key_index )%26]
-
+        print(f' output {output_letter}')
 #-----------------------------------------------------------------------------------------------------------------
 
 
         #rotor2
         if(self.rotor2.key == self.rotor2.notch):
-            key_index = ALPHABETS.index(self.rotor1.key)
-            self.rotor1.key = ALPHABETS[(key_index + 1)%26] 
+            key_index = ALPHABETS.index(self.rotor3.key)
+            self.rotor3.key = ALPHABETS[(key_index + 1)%26] 
 
-        index = (ALPHABETS.index(output_letter) - key_index)%26
         key_index = ALPHABETS.index(self.rotor2.key)
+        index = (ALPHABETS.index(output_letter) - key_index)%26
 
         output_letter = self.rotor2.bwiring[(index +key_index )%26]
-
+        print(f' output {output_letter}')
 #----------------------------------------------------------------------------------------------------------------
 
         #rotor1
         key_index = ALPHABETS.index(self.rotor1.key)
         self.rotor1.key = ALPHABETS[(key_index + 1)%26]           #rotor1 key is always updated
-        index = ALPHABETS.index(inp)
+        index = (ALPHABETS.index(output_letter) - key_index)%26
         key_index = ALPHABETS.index(self.rotor1.key)
-
         output_letter = self.rotor1.bwiring[(index +key_index )%26]
-
+        
+        print(f' output {output_letter}')
+        print(self.rotor1.key, self.rotor2.key,self.rotor3.key)
 #----------------------------------------------------------------------------------------------------------------
         
         return output_letter
@@ -220,9 +222,9 @@ rtr_b2 = 'AJPCZWRLFBDKOTYUQGENHXMIVS'
 rtr_f3 = 'BDFHJLCPRTXVZNYEIWGAKMUSQO'
 rtr_b3 = 'TAGBPCSDQEUFVNZHYIXJWLRKOM'
 
-rotor1 = Rotor('Q', 'K', rtr_f1, rtr_b1)
-rotor2 = Rotor('E', 'C', rtr_f2, rtr_b2)
-rotor3 = Rotor('V', 'M', rtr_f3, rtr_b3)
+rotor1 = Rotor('Q', 'A', rtr_f1, rtr_b1)
+rotor2 = Rotor('E', 'A', rtr_f2, rtr_b2)
+rotor3 = Rotor('V', 'A', rtr_f3, rtr_b3)
 
 
 plugboard = Plugboard()
@@ -235,6 +237,8 @@ enigma = Enigma(setup)
 
 plain_text = input("Enter plain_text:")
 
+cyphertext = []
 for i in range(len(plain_text)):
-    print(enigma.cypher(plain_text[i]))
+    cyphertext.append(enigma.cypher(plain_text[i]))
 
+print(cyphertext)
