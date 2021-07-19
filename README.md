@@ -1,10 +1,7 @@
 # ENIGMA
 Encrpyting ciphertext and decoding them according to the famous Enigma machine.
 
-*Currently only encryption of the message according to the Enigma algorithm is implemetned. The 
-implementation of decoding them is still in progress*
-
-**Wehrmacht Enigma is the exact replica of the machine**
+**Wehrmacht Enigma is the exact replica of the machine.**</br>
 **Enigma_Analog model is not exact clone of enigma, it has a few differences.**
 
 The design of Enigma limits it to the character set 'A'-'Z'.
@@ -38,3 +35,6 @@ mathematician Alan M. Turing.
 5. https://brilliant.org/wiki/enigma-machine/
 6. https://en.wikipedia.org/wiki/Enigma_rotor_details
 7. https://mckoss.com/posts/paper-enigma/paper-enigma.pdf
+
+
+*The Crytanalysis branch contains in-progress work on "Enigma in 2021".*
