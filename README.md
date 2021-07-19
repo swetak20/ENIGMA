@@ -4,7 +4,8 @@ Encrpyting ciphertext and decoding them according to the famous Enigma machine.
 *Currently only encryption of the message according to the Enigma algorithm is implemetned. The 
 implementation of decoding them is still in progress*
 
-** This model is not exact clone of enigma, it has a few differences. **
+**Wehrmacht Enigma is the exact replica of the machine**
+**Enigma_Analog model is not exact clone of enigma, it has a few differences.**
 
 The design of Enigma limits it to the character set 'A'-'Z'.
 Lower-case letters and punctuation are not supported.
